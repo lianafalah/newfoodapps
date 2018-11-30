@@ -73,22 +73,24 @@ public class AddFood extends AppCompatActivity {
             foodImage.setImageURI(selectedImage);
         }
     }
-    public void addItemButtonClicked(View view){
-
+    public void addItemButtonClicked(View view) {
         final String name_text = name.getText().toString().trim();
         final String desc_text = desc.getText().toString().trim();
         final String price_text = price.getText().toString().trim();
-        if (!TextUtils.isEmpty(name_text) && !TextUtils.isEmpty(desc_text) && !TextUtils.isEmpty(price_text) ){
+        if (!TextUtils.isEmpty(name_text) && !TextUtils.isEmpty(desc_text) && !TextUtils.isEmpty(price_text)) {
             StorageReference filepath = storageReference.child(uri.getLastPathSegment());
             filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     final String downloadurl = taskSnapshot.getStorage().getDownloadUrl().toString();
-                    Toast.makeText(AddFood.this,"Image uploaded",Toast.LENGTH_LONG).show();
-
+                    Toast.makeText(AddFood.this, "Image uploaded", Toast.LENGTH_LONG).show();
+                    final DatabaseReference newPost = mRef.push();
+                    newPost.child("name").setValue(name_text);
+                    newPost.child("desc").setValue(desc_text);
+                    newPost.child("price").setValue(price_text);
+                    newPost.child("image").setValue(downloadurl.toString());
                 }
             });
         }
     }
-
 }
